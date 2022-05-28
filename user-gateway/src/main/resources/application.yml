@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: gulimall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: user_route
+          uri: lb://user-server
+          predicates:
+          - Path=/api/user/**
+          filters:
+          - RewritePath=/api/(?<segment>.*),/$\{segment}
+        - id: ninja_route
+          uri: lb://ninja-server
+          predicates:
+          - Path=/api/ninja/**
+          filters:
+          - RewritePath=/api/(?<segment>.*),/$\{segment}
+server:
+  port: 88
