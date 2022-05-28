@@ -27,6 +27,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--user remote-->
+        <dependency>
+            <groupId>com.sora</groupId>
+            <artifactId>sysuser-remote</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

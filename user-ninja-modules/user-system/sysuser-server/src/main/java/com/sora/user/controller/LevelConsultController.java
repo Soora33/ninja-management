@@ -1,6 +1,5 @@
 package com.sora.user.controller;
 
-import com.sora.user.entity.LevelConsultEntity;
 import com.sora.user.service.LevelConsultService;
 import com.sora.utils.PageUtils;
 import com.sora.utils.R;
@@ -41,7 +40,7 @@ public class LevelConsultController {
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Integer id){
-		LevelConsultEntity levelConsult = levelConsultService.getById(id);
+		com.sora.user.entity.LevelConsultEntity levelConsult = levelConsultService.getById(id);
 
         return R.ok().put("levelConsult", levelConsult);
     }
@@ -50,7 +49,7 @@ public class LevelConsultController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody LevelConsultEntity levelConsult){
+    public R save(@RequestBody com.sora.user.entity.LevelConsultEntity levelConsult){
 		levelConsultService.save(levelConsult);
 
         return R.ok();
@@ -60,7 +59,7 @@ public class LevelConsultController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody LevelConsultEntity levelConsult){
+    public R update(@RequestBody com.sora.user.entity.LevelConsultEntity levelConsult){
 		levelConsultService.updateById(levelConsult);
 
         return R.ok();

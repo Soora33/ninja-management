@@ -12,5 +12,26 @@
         <result property="price" column="price"/>
     </resultMap>
 
+    <!--获取忍者列表-->
+    <select id="getNinjaList" resultType="com.sora.domain.response.Ninja">
+        SELECT
+            ninja.id,
+            ninja.`name`,
+            ninja.price,
+            ninja.chip,
+            `level`.level levelName
+        FROM
+            tb_ninja ninja
+        LEFT JOIN tb_level `level` ON ninja.level_id = `level`.id
+        <where>
+            <if test="name != null and name != ''">
+                AND ninja.name LIKE CONCAT('%', #{name},'%')
+            </if>
+            <if test="levelId != null and levelId != ''">
+                AND `level`.id = #{levelId}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

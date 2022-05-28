@@ -1,11 +1,9 @@
 package com.sora.domain.request;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * 
@@ -22,7 +20,6 @@ public class UserNinjaChipEntity implements Serializable {
 	/**
 	 * 忍者id
 	 */
-	@TableId
 	private Integer ninjaId;
 	/**
 	 * 用户id

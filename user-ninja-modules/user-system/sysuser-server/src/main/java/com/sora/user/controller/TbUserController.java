@@ -1,5 +1,6 @@
 package com.sora.user.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sora.user.entity.TbUserEntity;
 import com.sora.user.service.TbUserService;
 import com.sora.utils.PageUtils;
@@ -26,6 +27,14 @@ public class TbUserController {
     private TbUserService tbUserService;
 
     /**
+     * 购买碎片
+     */
+    @RequestMapping("/buyChip/{ninjaId}/{userId}")
+    public R buyChip(@PathVariable("ninjaId") Integer ninjaId,@PathVariable("userId") Integer userId){
+        return tbUserService.buyChip(ninjaId, userId);
+    }
+
+    /**
      * 列表
      */
     @RequestMapping("/list")
@@ -44,6 +53,20 @@ public class TbUserController {
 		TbUserEntity tbUser = tbUserService.getById(id);
 
         return R.ok().put("tbUser", tbUser);
+    }
+
+
+    /**
+     * 根据用户手机号获取用户
+     * @Params tel
+     */
+    @RequestMapping("/infoByTel/{tel}")
+    public R getUserByTel(@PathVariable("tel") String tel){
+		TbUserEntity tbUser = tbUserService.getUserByTel(tel);
+        if (tbUser == null) {
+            return R.error(500,"用户名或密码错误!");
+        }
+        return R.ok().put("tbUser", JSONObject.toJSONString(tbUser));
     }
 
     /**

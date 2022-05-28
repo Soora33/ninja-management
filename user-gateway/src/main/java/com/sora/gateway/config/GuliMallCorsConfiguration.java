@@ -21,7 +21,7 @@ public class GuliMallCorsConfiguration {
         //1.配置跨域
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOriginPattern("*");
         //cookie信息
         corsConfiguration.setAllowCredentials(true);
 

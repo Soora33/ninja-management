@@ -7,8 +7,14 @@ spring:
         server-addr: 127.0.0.1:8848
     gateway:
       routes:
+        - id: auth_route
+          uri: lb://user-auth
+          predicates:
+          - Path=/api/auth/**
+          filters:
+          - RewritePath=/api/(?<segment>.*),/$\{segment}
         - id: user_route
-          uri: lb://user-server
+          uri: lb://sysuser-server
           predicates:
           - Path=/api/user/**
           filters:

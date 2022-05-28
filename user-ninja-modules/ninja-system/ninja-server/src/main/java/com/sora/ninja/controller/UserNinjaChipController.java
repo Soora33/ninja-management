@@ -57,6 +57,15 @@ public class UserNinjaChipController {
     }
 
     /**
+     * <h1>修改用户持有的忍者碎片个数</h1>
+     * 根据用户id和忍者id修改 如果存在数量+1 不在插入数据
+     */
+    @RequestMapping("/update/{userId}/{ninjaId}")
+    public R updateNinjaChip(@PathVariable("userId") Integer userId, @PathVariable("ninjaId") Integer ninjaId){
+		return userNinjaChipService.updateNinjaChip(userId,ninjaId);
+    }
+
+    /**
      * 修改
      */
     @RequestMapping("/update")

@@ -1,19 +1,15 @@
 package com.sora.ninja.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.alibaba.fastjson.JSONObject;
 import com.sora.domain.request.TbNinjaEntity;
 import com.sora.ninja.service.TbNinjaService;
 import com.sora.utils.PageUtils;
 import com.sora.utils.R;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 
@@ -42,13 +38,13 @@ public class TbNinjaController {
 
 
     /**
-     * 信息
+     * 根据忍者信息获取忍者
      */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Integer id){
 		TbNinjaEntity tbNinja = tbNinjaService.getById(id);
 
-        return R.ok().put("tbNinja", tbNinja);
+        return R.ok().put("tbNinja", JSONObject.toJSONString(tbNinja));
     }
 
     /**
