@@ -68,11 +68,12 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserDao, TbUserEntity> impl
         log.info("开始远程调用获取忍者信息,获取忍者id为[{}]的信息", ninjaId);
         // 获取忍者信息
         R ninjaR = null;
-        try {
-            ninjaR = ninjaRemoteServer.info(ninjaId);
-        } catch (Exception e) {
-            log.info("远程调用获取id为[{}]的忍者信息失败,错误信息:[{}],耗时[{}]MS", ninjaId, JSONObject.toJSONString(ninjaR), System.currentTimeMillis() - startTime);
-        }
+        ninjaR = ninjaRemoteServer.info(ninjaId);
+//        try {
+//            ninjaR = ninjaRemoteServer.info(ninjaId);
+//        } catch (Exception e) {
+//            log.info("远程调用获取id为[{}]的忍者信息失败,错误信息:[{}],耗时[{}]MS", ninjaId, JSONObject.toJSONString(ninjaR), System.currentTimeMillis() - startTime);
+//        }
         Object tbNinja = ninjaR.get("tbNinja").toString();
         if (tbNinja == null) {
             log.info("远程调用获取id为[{}]的忍者信息失败,忍者为空,错误信息:[{}],耗时[{}]MS", ninjaId, JSONObject.toJSONString(ninjaR), System.currentTimeMillis() - startTime);

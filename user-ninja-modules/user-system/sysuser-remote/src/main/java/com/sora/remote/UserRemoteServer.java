@@ -1,5 +1,6 @@
 package com.sora.remote;
 
+import com.sora.factory.UserFactory;
 import com.sora.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date: 2022/05/28
  * @author: Sora33
  */
-@FeignClient(value = "sysuser-server", path = "/user/tbuser")
+@FeignClient(value = "sysuser-server", path = "/user/tbuser",fallbackFactory = UserFactory.class)
 public interface UserRemoteServer {
 
     /**

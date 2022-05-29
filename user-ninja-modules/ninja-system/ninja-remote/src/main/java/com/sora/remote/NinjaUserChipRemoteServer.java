@@ -1,8 +1,10 @@
 package com.sora.remote;
 
 import com.sora.domain.request.UserNinjaChipEntity;
+import com.sora.factory.NinjaUserChipFactory;
 import com.sora.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date: 2022/05/28
  * @author: Sora33
  */
-@FeignClient(value = "ninja-server",path = "/ninja/userninjachip")
+@FeignClient(value = "ninja-server",path = "/ninja/userninjachip",fallbackFactory = NinjaUserChipFactory.class)
+@Component
 public interface NinjaUserChipRemoteServer {
 
     /**

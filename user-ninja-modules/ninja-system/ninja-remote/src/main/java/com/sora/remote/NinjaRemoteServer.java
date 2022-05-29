@@ -1,7 +1,9 @@
 package com.sora.remote;
 
+import com.sora.factory.NinjaFactory;
 import com.sora.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date: 2022/05/28
  * @author: Sora33
  */
-@FeignClient(value = "ninja-server",path = "/ninja/tbninja")
+@FeignClient(value = "ninja-server",path = "/ninja/tbninja",fallbackFactory = NinjaFactory.class)
+@Component
 public interface NinjaRemoteServer {
 
     /**
