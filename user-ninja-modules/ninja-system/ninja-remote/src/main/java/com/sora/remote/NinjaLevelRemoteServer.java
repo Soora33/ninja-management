@@ -6,16 +6,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * @className: NinjaRemoteServer
+ * @className: NinjLevelRemoteServer
  * @description: TODO
- * @date: 2022/05/28
+ * @date: 2022/05/29
  * @author: Sora33
  */
-@FeignClient(value = "ninja-server",path = "/ninja/tbninja")
-public interface NinjaRemoteServer {
+@FeignClient(value = "ninja-server",path = "/ninja/tblevel")
+public interface NinjaLevelRemoteServer {
 
     /**
-     * 根据忍者信息获取忍者
+     * 信息
      */
     @RequestMapping("/info/{id}")
     R info(@PathVariable("id") Integer id);

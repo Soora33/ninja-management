@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * 查询参数
- *  王致翔
+ *  Sora33
  */
 public class Query<T> {
 

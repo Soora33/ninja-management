@@ -10,7 +10,7 @@ package com.sora.exception;
 
 /**
  * 自定义异常
- *	王致翔
+ *	Sora33
  */
 public class RRException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

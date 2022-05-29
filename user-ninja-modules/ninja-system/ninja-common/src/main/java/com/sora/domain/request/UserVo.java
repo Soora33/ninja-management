@@ -1,4 +1,4 @@
-package com.sora.auth.entity.response;
+package com.sora.domain.request;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -6,11 +6,12 @@ import lombok.Data;
 /**
  * @className: UserVo
  * @description: TODO
- * @date: 2022/05/28
+ * @date: 2022/05/29
  * @author: Sora33
  */
 @Data
 public class UserVo {
+
     /**
      * 主键
      */

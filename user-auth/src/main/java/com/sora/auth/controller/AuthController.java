@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @className: AuthController
- * @description: TODO
+ * @description: 鉴权controller
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @RestController
 @RequestMapping("/auth")
@@ -57,6 +57,7 @@ public class AuthController {
                 .put("userId", userVo.getId())
                 .put("vipLevel", userVo.getVipLevel())
                 .put("priceTotal", userVo.getPriceTotal())
-                .put("buyCount", userVo.getBuyCount());
+                .put("buyCount", userVo.getBuyCount())
+                .put("gold", userVo.getGold());
     }
 }

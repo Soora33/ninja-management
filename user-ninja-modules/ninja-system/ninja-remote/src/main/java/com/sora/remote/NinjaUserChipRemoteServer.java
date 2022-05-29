@@ -1,15 +1,17 @@
 package com.sora.remote;
 
+import com.sora.domain.request.UserNinjaChipEntity;
 import com.sora.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @className: NinjaRemoteServer
  * @description: TODO
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @FeignClient(value = "ninja-server",path = "/ninja/userninjachip")
 public interface NinjaUserChipRemoteServer {
@@ -20,4 +22,17 @@ public interface NinjaUserChipRemoteServer {
      */
     @RequestMapping("/update/{userId}/{ninjaId}")
     R updateNinjaChip(@PathVariable("userId") Integer userId, @PathVariable("ninjaId") Integer ninjaId);
+
+    /**
+     * 根据用户id和忍者id获取对象
+     */
+    @RequestMapping("/info/{ninjaId}/{userId}")
+    R getUserNinjaChip(@PathVariable("ninjaId") Integer ninjaId,@PathVariable("userId") Integer userId);
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/update")
+    R update(@RequestBody UserNinjaChipEntity userNinjaChip);
+
 }

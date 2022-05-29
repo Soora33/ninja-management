@@ -4,9 +4,9 @@ import lombok.Data;
 
 /**
  * @className: LoginUserBody
- * @description: TODO
+ * @description: 登录对象
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @Data
 public class LoginUserBody {

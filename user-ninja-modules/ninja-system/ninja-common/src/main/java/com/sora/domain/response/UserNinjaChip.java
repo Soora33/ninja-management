@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
- * @className: Ninja
- * @description: 忍者列表
- * @date: 2022/05/28
+ * @className: UserNinjaChip
+ * @description: TODO
+ * @date: 2022/05/29
  * @author: Sora33
  */
 @Data
-public class Ninja {
+public class UserNinjaChip {
     /**
      * id
      */
@@ -25,7 +25,11 @@ public class Ninja {
      */
     private String levelName;
     /**
-     * 碎片价格
+     * 招募需要
      */
-    private Integer price;
+    private Integer chip;
+    /**
+     * 用户持有碎片
+     */
+    private Integer userChip;
 }

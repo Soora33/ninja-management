@@ -15,8 +15,11 @@ import com.sora.utils.Query;
 import com.sora.utils.R;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,7 +56,11 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserDao, TbUserEntity> impl
     }
 
     /**
-     * 购买碎片
+     * <h1>购买碎片</h1>
+     * <p>
+     *     远程调用获取忍者和用户信息,随后判断用户是否有购买次数,金币是否足够
+     *     购买完成之后重新赋值用户等级
+     * </p>
      */
     @Override
     public R buyChip(Integer ninjaId, Integer userId) {
@@ -92,10 +99,73 @@ public class TbUserServiceImpl extends ServiceImpl<TbUserDao, TbUserEntity> impl
         // 使用远程调用修改用户碎片状况
         ninjaUserChipRemoteServer.updateNinjaChip(userId, ninjaId);
         // 修改用户状态
+        /**
+         * 判断用户vip等级 如果V8以上七折
+         */
+        int losePrice = 0;
+        if (Integer.parseInt(user.getVipLevel().substring(1)) > 8) {
+            losePrice = (int)(ninjaVo.getPrice() * 0.7);
+        }
         user.setBuyCount(user.getBuyCount() - 1);
-        user.setGold(user.getGold() - ninjaVo.getPrice());
+        // 赋值用户剩余金额
+        user.setGold(user.getGold() - losePrice);
         baseMapper.updateById(user);
         log.info("用户id[{}]购买忍者[{}]成功,用户当前余额[{}],耗时[{}]MS", user.getId(), ninjaVo.getName(), user.getGold(), System.currentTimeMillis() - startTime);
         return R.ok("购买碎片成功");
+    }
+
+    /**
+     * <h1 style=color:red>用户充值余额</h1>
+     * 1 修改用户累计充值金额
+     * 2 加上对应充值后的金额
+     * 3 修改用户vip等级
+     */
+    @Override
+    public R updateGlodAndPriceByUserId(Integer userId, Integer price) {
+        long startTime = System.currentTimeMillis();
+        // 根据用户id获取用户
+        TbUserEntity user = baseMapper.selectById(userId);
+        /**
+         * 	金币充值充值100元以上奖励10%的额外金币，即充值100元，到账1100金币（5分）
+         */
+        if (price > 1000) {
+            // 增加的钱
+            int addPrice = (int) (price * 0.1);
+            price += addPrice;
+        }
+        // 转换为金币
+        Integer gold = price * 10;
+        // 修改充值总金额
+        user.setPriceTotal(user.getPriceTotal() + price);
+        // 修改金币
+        user.setGold(user.getGold() + gold);
+        // 获取用户当前vip等级
+        String vipLevel = baseMapper.getUserLevelByTotal(user.getPriceTotal());
+        user.setVipLevel(vipLevel);
+        // 修改用户
+        int update = baseMapper.updateById(user);
+        if (update > 0) {
+            log.info("用户id[{}]充值成功,充值金额[{}],耗时[{}]MS", user.getId(), price, System.currentTimeMillis() - startTime);
+            return R.ok("充值成功");
+        }
+        log.info("用户id[{}]充值失败,充值金额[{}],耗时[{}]MS", user.getId(), price, System.currentTimeMillis() - startTime);
+        return R.error(500, "充值失败");
+    }
+
+
+    /**
+     * 定时任务 每天晚上24点刷新每日购买次数
+     */
+    @Scheduled(cron = "59 59 23 * * *")
+    public void updateBuyCount() {
+        // 获取所有用户
+        List<TbUserEntity> userEntities = baseMapper.selectList(null);
+        for (TbUserEntity userEntity : userEntities) {
+            // 获得用户VIP等级
+            Integer buyCount = Integer.parseInt(userEntity.getVipLevel().substring(1));
+            userEntity.setBuyCount(buyCount);
+            baseMapper.updateById(userEntity);
+            log.info(new Date().toLocaleString() + "每次购买次数刷新成功");
+        }
     }
 }

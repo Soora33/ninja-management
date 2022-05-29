@@ -10,7 +10,7 @@ package com.sora.utils;
 
 /**
  * 常量
- * 王致翔
+ * Sora33
  */
 public class Constant {
 	/** 超级管理员ID */

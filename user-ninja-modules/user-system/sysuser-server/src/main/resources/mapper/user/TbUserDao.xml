@@ -15,5 +15,10 @@
         <result property="priceTotal" column="price_total"/>
     </resultMap>
 
+    <!--根据累计充值金额获取用户当前等级-->
+    <select id="getUserLevelByTotal" resultType="java.lang.String">
+        SELECT name FROM level_consult WHERE gold_count &lt; #{priceTotal} ORDER BY ABS(#{priceTotal} - gold_count) LIMIT 1
+    </select>
+
 
 </mapper>

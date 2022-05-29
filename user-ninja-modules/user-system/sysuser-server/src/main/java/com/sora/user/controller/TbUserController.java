@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 
  *
- * @author sora33
+ * @author Sora33
  * @email 2097665736inori@gmail.com
  * @date 2022-05-28 17:19:45
  */
@@ -27,7 +27,11 @@ public class TbUserController {
     private TbUserService tbUserService;
 
     /**
-     * 购买碎片
+     * <h1>购买碎片</h1>
+     * <p>
+     *     远程调用获取忍者和用户信息,随后判断用户是否有购买次数,金币是否足够
+     *     购买完成之后重新赋值用户等级
+     * </p>
      */
     @RequestMapping("/buyChip/{ninjaId}/{userId}")
     public R buyChip(@PathVariable("ninjaId") Integer ninjaId,@PathVariable("userId") Integer userId){
@@ -52,7 +56,7 @@ public class TbUserController {
     public R info(@PathVariable("id") Integer id){
 		TbUserEntity tbUser = tbUserService.getById(id);
 
-        return R.ok().put("tbUser", tbUser);
+        return R.ok().put("tbUser", JSONObject.toJSONString(tbUser));
     }
 
 
@@ -80,13 +84,14 @@ public class TbUserController {
     }
 
     /**
-     * 修改
+     * <h1 style=color:red>用户充值余额</h1>
+     * 1 修改用户累计充值金额
+     * 2 加上对应充值后的金额
+     * 3 修改用户vip等级
      */
-    @RequestMapping("/update")
-    public R update(@RequestBody TbUserEntity tbUser){
-		tbUserService.updateById(tbUser);
-
-        return R.ok();
+    @RequestMapping("/update/{userId}/{gold}")
+    public R update(@PathVariable("userId") Integer userId, @PathVariable("gold") Integer price) {
+        return tbUserService.updateGlodAndPriceByUserId(userId, price);
     }
 
     /**

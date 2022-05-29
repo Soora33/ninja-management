@@ -3,7 +3,10 @@ package com.sora.ninja.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.sora.domain.request.UserNinjaChipEntity;
+import com.sora.domain.response.UserNinjaChip;
 import com.sora.ninja.dao.UserNinjaChipDao;
 import com.sora.ninja.service.UserNinjaChipService;
 import com.sora.utils.PageUtils;
@@ -12,6 +15,7 @@ import com.sora.utils.R;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,6 +34,7 @@ public class UserNinjaChipServiceImpl extends ServiceImpl<UserNinjaChipDao, User
 
 
     /**
+     * <h1>修改用户持有的忍者碎片个数</h1>
      * 根据用户id和忍者id修改 如果存在数量+1 不在插入数据
      */
     @Override
@@ -60,6 +65,33 @@ public class UserNinjaChipServiceImpl extends ServiceImpl<UserNinjaChipDao, User
         log.info("碎片数量同步完成,用户当前拥有忍者id[{}]碎片个数为[{}],耗时[{}]MS",
                 ninjaId, userNinjaChip.getChip(),System.currentTimeMillis() - startTime);
         return R.ok("碎片同步完成");
+    }
+
+    /**
+     * 获取用户忍者碎片数量的忍者列表
+     */
+    @Override
+    public PageUtils getUserNinjaChipList(Map<String, Object> params) {
+        // 获取分页信息
+        String page = params.get("page").toString();
+        String pageSize = params.get("pageSize").toString();
+        // 分页
+        PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(pageSize));
+        // 获得集合
+        List<UserNinjaChip> userNinjaChipList = baseMapper.getUserNinjaChipList();
+        PageInfo<UserNinjaChip> userNinjaChipPageInfo = new PageInfo<>(userNinjaChipList);
+        return new PageUtils(userNinjaChipList, (int)userNinjaChipPageInfo.getTotal(), Integer.parseInt(page), Integer.parseInt(pageSize));
+    }
+
+    /**
+     * 根据用户id和忍者id获取对象
+     */
+    @Override
+    public UserNinjaChipEntity getUserNinjaChip(Integer ninjaId, Integer userId) {
+        return baseMapper.selectOne(new QueryWrapper<UserNinjaChipEntity>(){{
+            eq("user_id", userId);
+            eq("ninja_id", ninjaId);
+        }});
     }
 
 }

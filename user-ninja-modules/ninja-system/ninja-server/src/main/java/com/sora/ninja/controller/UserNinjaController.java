@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 
  *
- * @author sora33
+ * @author Sora33
  * @email 2097665736inori@gmail.com
  * @date 2022-05-28 17:17:45
  */
@@ -47,13 +47,14 @@ public class UserNinjaController {
     }
 
     /**
-     * 保存
+     * <h2>增加用户的忍者</h2>
+     * <p>
+     *     判断用户碎片是否足够,记得减去忍者碎片,重新赋值用户碎片数量
+     * </p>
      */
-    @RequestMapping("/save")
-    public R save(@RequestBody UserNinjaEntity userNinja){
-		userNinjaService.save(userNinja);
-
-        return R.ok();
+    @RequestMapping("/save/{userId}/{ninjaId}")
+    public R saveNinja(@PathVariable("userId") Integer userId,@PathVariable("ninjaId") Integer ninjaId){
+        return userNinjaService.saveNinja(userId, ninjaId);
     }
 
     /**

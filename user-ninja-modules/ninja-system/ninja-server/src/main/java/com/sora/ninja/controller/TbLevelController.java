@@ -1,5 +1,6 @@
 package com.sora.ninja.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sora.domain.request.TbLevelEntity;
 import com.sora.ninja.service.TbLevelService;
 import com.sora.utils.PageUtils;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * 
  *
- * @author sora33
+ * @author Sora33
  * @email 2097665736inori@gmail.com
  * @date 2022-05-28 17:17:45
  */
@@ -43,7 +44,7 @@ public class TbLevelController {
     public R info(@PathVariable("id") Integer id){
 		TbLevelEntity tbLevel = tbLevelService.getById(id);
 
-        return R.ok().put("tbLevel", tbLevel);
+        return R.ok().put("tbLevel", JSONObject.toJSONString(tbLevel));
     }
 
     /**

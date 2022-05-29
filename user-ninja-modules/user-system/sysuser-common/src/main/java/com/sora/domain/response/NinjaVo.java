@@ -7,7 +7,7 @@ import lombok.Data;
  * @className: NinjaVo
  * @description: TODO
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @Data
 public class NinjaVo {

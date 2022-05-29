@@ -1,5 +1,7 @@
 package com.sora.ninja.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sora.domain.request.UserNinjaChipEntity;
 import com.sora.ninja.service.UserNinjaChipService;
 import com.sora.utils.PageUtils;
@@ -15,7 +17,7 @@ import java.util.Map;
 /**
  * 
  *
- * @author sora33
+ * @author Sora33
  * @email 2097665736inori@gmail.com
  * @date 2022-05-28 17:17:45
  */
@@ -26,13 +28,23 @@ public class UserNinjaChipController {
     private UserNinjaChipService userNinjaChipService;
 
     /**
-     * 列表
+     * 获取用户忍者碎片数量的忍者列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = userNinjaChipService.queryPage(params);
-
+    public R getUserNinjaChipList(@RequestParam Map<String, Object> params){
+        PageUtils page = userNinjaChipService.getUserNinjaChipList(params);
         return R.ok().put("page", page);
+    }
+
+
+    /**
+     * 根据用户id和忍者id获取对象
+     */
+    @RequestMapping("/info/{ninjaId}/{userId}")
+    public R getUserNinjaChip(@PathVariable("ninjaId") Integer ninjaId,@PathVariable("userId") Integer userId){
+        UserNinjaChipEntity userNinjaChip = userNinjaChipService.getUserNinjaChip(ninjaId, userId);
+
+        return R.ok().put("userNinjaChip", JSONObject.toJSONString(userNinjaChip));
     }
 
 
@@ -70,7 +82,10 @@ public class UserNinjaChipController {
      */
     @RequestMapping("/update")
     public R update(@RequestBody UserNinjaChipEntity userNinjaChip){
-		userNinjaChipService.updateById(userNinjaChip);
+		userNinjaChipService.update(userNinjaChip,new QueryWrapper<UserNinjaChipEntity>(){{
+            eq("user_id", userNinjaChip.getUserId());
+            eq("ninja_id", userNinjaChip.getNinjaId());
+        }});
 
         return R.ok();
     }

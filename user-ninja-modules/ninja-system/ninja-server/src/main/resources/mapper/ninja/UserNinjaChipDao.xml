@@ -10,5 +10,19 @@
         <result property="chip" column="chip"/>
     </resultMap>
 
+    <!--获取忍者商店页面-->
+    <select id="getUserNinjaChipList" resultType="com.sora.domain.response.UserNinjaChip">
+        SELECT
+            ninja.id,
+            ninja.`name`,
+            ninja.chip,
+            `level`.LEVEL levelName,
+            `ninja_chip`.chip	userChip
+        FROM
+            tb_ninja ninja
+        LEFT JOIN tb_level `level` ON ninja.level_id = `level`.id
+        LEFT JOIN user_ninja_chip `ninja_chip` ON ninja_chip.ninja_id = `ninja`.id
+    </select>
+
 
 </mapper>

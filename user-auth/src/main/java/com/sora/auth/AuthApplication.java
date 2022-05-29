@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @className: AuthApplication
  * @description: TODO
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @SpringBootApplication
 @EnableDiscoveryClient

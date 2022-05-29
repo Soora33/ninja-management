@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * 返回数据
- *	王致翔
+ *	Sora33
  */
 public class R extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;

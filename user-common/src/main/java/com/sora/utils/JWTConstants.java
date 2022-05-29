@@ -3,7 +3,7 @@ package com.sora.utils;
 /**
  * 权限相关通用常量
  *
- * @author 王致翔
+ * @author Sora33
  */
 public class JWTConstants
 {

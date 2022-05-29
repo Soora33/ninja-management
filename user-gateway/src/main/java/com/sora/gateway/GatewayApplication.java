@@ -9,7 +9,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @className: GatewayApplication
  * @description: TODO
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient

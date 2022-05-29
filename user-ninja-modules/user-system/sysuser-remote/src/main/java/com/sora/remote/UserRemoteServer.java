@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @className: UserRemoteServer
- * @description: TODO
+ * @description: 用户远程调用
  * @date: 2022/05/28
- * @author: 王致翔
+ * @author: Sora33
  */
 @FeignClient(value = "sysuser-server", path = "/user/tbuser")
 public interface UserRemoteServer {
@@ -20,4 +20,10 @@ public interface UserRemoteServer {
      */
     @RequestMapping("/infoByTel/{tel}")
     R getUserByTel(@PathVariable("tel") String tel);
+
+    /**
+     * 根据用户id获取用户
+     */
+    @RequestMapping("/info/{id}")
+    R info(@PathVariable("id") Integer id);
 }
