@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./static/static/vue.min.js"></script>
+    <script src="./static/static/axios.min.js"></script>
+    <!-- 本地引入lib-master -->
+    <link rel="stylesheet" type="text/css" href="./static/lib-master/theme-chalk/index.css" />
+    <script src="./static/lib-master/index.js" type="text/javascript" charset="utf-8"></script>
+    <title>登录</title>
+</head>
+
+<body>
+    <div id='app'>
+        <h1 align="center">登录</h1>
+        <el-form :model="userInfo" status-icon :rules="rules" ref="userInfo" label-width="100px" class="demo-userInfo">
+            <el-form-item label="手机号" prop="tel">
+                <el-input type="tel" v-model="userInfo.tel" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input type="password" v-model="userInfo.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm('userInfo')">提交</el-button>
+                <el-button @click="resetForm('userInfo')">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                var validatename = (rule, value, callback) => {
+                    if (value === '') {
+                        callback(new Error('请输入手机号'));
+                    } else {
+                        if (this.userInfo.password !== '') {
+                            this.$refs.userInfo.validateField('password');
+                        }
+                        callback();
+                    }
+                };
+                var validatePassword = (rule, value, callback) => {
+                    if (value === '') {
+                        callback(new Error('请输入密码'));
+                    } else {
+                        callback();
+                    }
+                };
+                return {
+                    userInfo: {
+                        tel: '',
+                        password: '',
+                    },
+                    rules: {
+                        tel: [
+                            { validator: validatename, trigger: 'blur' }
+                        ],
+                        password: [
+                            { validator: validatePassword, trigger: 'blur' }
+                        ]
+                    }
+                };
+            },
+            methods: {
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        console.log(this.userInfo)
+                        if (valid) {
+                            axios.post(`http://127.0.0.1:88/api/auth/login`,this.userInfo).then(({ data }) => {
+                                if (data.code == 0) {
+                                    this.$message.success('登录成功');
+                                    localStorage.setItem('userId',data.userId)
+                                    localStorage.setItem('token',data.token)
+                                    localStorage.setItem('userName',data.userName)
+                                    localStorage.setItem('vipLevel',data.vipLevel)
+                                    localStorage.setItem('priceTotal',data.priceTotal)
+                                    localStorage.setItem('buyCount',data.buyCount)
+                                    localStorage.setItem('gold',data.gold)
+                                    location = './ninja_shop.html';
+                                } else {
+                                    this.$message.error(data.msg);
+                                }
+                            })
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

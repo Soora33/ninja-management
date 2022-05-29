@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+	</head>
+	<body>
+		<div id="d1"></div>
+		<div id="d2">
+			数值1：<input id="p1">
+			数值2：<input id="p2">
+			<button id="but1">加</button>
+			<button id="but2">减</button>
+			<button id="but3">乘</button>
+			<button id="but4">除</button>
+		</div>
+		<div id="d3">
+			<p id="p3"></p>
+		</div>
+	</body>
+	<script type="text/javascript">
+			var but1=document.getElementById("but1");
+			but1.onclick=function(){
+				var num1=document.getElementById("p1").value;
+				var num2=document.getElementById("p2").value;
+				var x1=Number(num1);
+				var x2=Number(num2);
+				document.getElementById("p3").innerText=x1+x2;
+			}
+			var but2=document.getElementById("but2");
+			but2.onclick=function(){
+				var num1=document.getElementById("p1").value;
+				var num2=document.getElementById("p2").value;
+				var x1=Number(num1);
+				var x2=Number(num2);
+				document.getElementById("p3").innerText=x1-x2;
+			}
+			var but3=document.getElementById("but3");
+			but3.onmouseover=function(){
+				var num1=document.getElementById("p1").value;
+				var num2=document.getElementById("p2").value;
+				var x1=Number(num1);
+				var x2=Number(num2);
+				document.getElementById("p3").innerText=x1*x2;
+			}
+			var but4=document.getElementById("but4");
+			but4.onmouseout=function(){
+				var num1=document.getElementById("p1").value;
+				var num2=document.getElementById("p2").value;
+				var x1=Number(num1);
+				var x2=Number(num2);
+				document.getElementById("p3").innerText=x1/x2;
+			}
+		</script>
+</html>

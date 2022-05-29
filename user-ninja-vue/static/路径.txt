@@ -1,0 +1,5 @@
+<script src="./static/static/vue.min.js"></script>
+    <script src="./static/static/axios.min.js"></script>
+    <!-- 本地引入lib-master -->
+    <link rel="stylesheet" type="text/css" href="./static/lib-master/theme-chalk/index.css" />
+    <script src="./static/lib-master/index.js" type="text/javascript" charset="utf-8"></script>

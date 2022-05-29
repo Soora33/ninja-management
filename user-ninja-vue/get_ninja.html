@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./static/static/vue.min.js"></script>
+    <script src="./static/static/axios.min.js"></script>
+    <!-- 本地引入lib-master -->
+    <link rel="stylesheet" type="text/css" href="./static/lib-master/theme-chalk/index.css" />
+    <script src="./static/lib-master/index.js" type="text/javascript" charset="utf-8"></script>
+    <title>招募忍者</title>
+</head>
+<div id='app'>
+    <h1 align="center">招募忍者</h1>
+    <h3><span aria-flowto="left"> 我的VIP等级:<font style="color: red">{{vipLevel}}</font>
+        </span><span aria-flowto="right">
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            我的金币:
+            <font style="color: red">{{gold}}</font>
+            <el-button type="primary" @click="openRechargeGlod">充值金币</el-button>
+        </span></h3>
+    <h3 align="left">累计充值: <font style="color: red"> {{priceTotal}}</font>元 <el-link type="primary"
+            @click="location='./ninja_shop.html'">忍者商店</el-link>
+        <el-link type="primary" @click="location='./my_ninja.html'">我的忍者</el-link>
+    </h3>
+
+    <el-table :data="userNinjaChipList" border v-loading="userNinjaChipListLoading"
+        @selection-change="selectionChangeHandle" style="width: 100%;">
+        <el-table-column prop="name" header-align="center" align="center" label="忍者名">
+        </el-table-column>
+        <el-table-column prop="levelName" header-align="center" align="center" label="忍者等级">
+        </el-table-column>
+        <el-table-column prop="userChip" header-align="center" align="center" label="我的碎片数量">
+            <template slot-scope="scope">
+                <span>
+                    {{scope.row.userChip == null ? 0 : scope.row.userChip}}
+                </span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="chip" header-align="center" align="center" label="招募需要">
+        </el-table-column>
+        <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+            <template slot-scope="scope">
+                <el-button type="success" :disabled="scope.row.userChip < scope.row.chip" size="small"
+                    @click="buyChip(scope.row.id)">招募</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex"
+        :page-sizes="[3, 5, 50, 100]" :page-size="pageSize" :total="totalPage"
+        layout="total, sizes, prev, pager, next, jumper">
+    </el-pagination>
+
+    <!-- 充值金币dialog -->
+    <el-dialog title="充值" :visible.sync="rechargeGlodStatus" width="30%">
+        <el-form>
+            <el-input lebel="充值金额" v-model="rechargeGlod" palceholder="请输入要充值的金额"></el-input>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="rechargeGlodStatus = false">取 消</el-button>
+            <el-button type="primary" @click="submitRechargeGlod">充 值</el-button>
+        </span>
+    </el-dialog>
+
+    </el-dialog>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                userId: localStorage.getItem('userId'),
+                gold: localStorage.getItem('gold'),
+                token: localStorage.getItem('token'),
+                userName: localStorage.getItem('userId'),
+                vipLevel: localStorage.getItem('vipLevel'),
+                buyCount: localStorage.getItem('buyCount'),
+                priceTotal: localStorage.getItem('priceTotal'),
+                baseURL: 'http://127.0.0.1:88/api',
+                userNinjaChipList: [],
+                pageIndex: 1,
+                pageSize: 3,
+                totalPage: 0,
+                rechargeGlod: 0,
+                userNinjaChipListLoading: false,
+                rechargeGlodStatus: false,
+                userNinjaChipListSelections: [],
+                addOrUpdateVisible: false
+            }
+        },
+        created() {
+            if (this.token) {
+                this.getUserNinjaChipList();
+                this.getUserInfo();
+            } else {
+                location = './login.html';
+            }
+        },
+        //方法集合
+        methods: {
+            // 招募
+            buyChip(ninjaId) {
+                axios.get(`${this.baseURL}/ninja/userninja/save/${this.userId}/${ninjaId}`, { headers: { "token": this.token } }).then(({ data }) => {
+                    if (data.msg == 0) {
+                        this.$message.success(data.msg);
+                    } else {
+                        this.$message.success(data.msg);
+                    }
+                })
+            },
+            // 充值
+            submitRechargeGlod() {
+                // 对用户充值的金额进行判断
+                if (Number(this.rechargeGlod) < 10) {
+                    this.$message.error('充值金额最少10元');
+                    return;
+                }
+                if (Number(this.rechargeGlod) != Number.parseInt(this.rechargeGlod)) {
+                    this.$message.error('必须充值整数');
+                    return;
+                }
+                axios.get(`${this.baseURL}/user/tbuser/update/${this.userId}/${this.rechargeGlod}`, { headers: { "token": this.token } }).then(({ data }) => {
+                    this.$message.success('充值成功');
+                    this.rechargeGlodStatus = false;
+                    this.getUserInfo();
+                    setInterval(() => {
+                        location.reload();
+                    }, 1000);
+                })
+            },
+            // 打开充值金币对话框
+            openRechargeGlod() {
+                this.rechargeGlod = 0;
+                this.rechargeGlodStatus = true;
+
+            },
+            // 获取数据列表
+            getUserNinjaChipList() {
+                this.userNinjaChipListLoading = true
+                axios.get(`${this.baseURL}/ninja/userninjachip/list?page=${this.pageIndex}&pageSize=${this.pageSize}`, { headers: { "token": this.token } }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        this.userNinjaChipList = data.page.list
+                        this.totalPage = data.page.totalCount
+                    } else {
+                        this.userNinjaChipList = []
+                        this.totalPage = 0
+                    }
+                    this.userNinjaChipListLoading = false
+                })
+            },
+            // 获取用户信息
+            getUserInfo() {
+                axios.get(`${this.baseURL}/user/tbuser/info/${this.userId}`, { headers: { "token": this.token } }).then(({ data }) => {
+                    if (data && data.code === 0) {
+                        // JSON -> Object
+                        var tbUser = JSON.parse(data.tbUser);
+                        localStorage.setItem('buyCount', tbUser.buyCount);
+                        localStorage.setItem('gold', tbUser.gold);
+                        localStorage.setItem('priceTotal', tbUser.priceTotal);
+                        localStorage.setItem('vipLevel', tbUser.vipLevel);
+                    }
+                })
+            },
+            // 每页数
+            sizeChangeHandle(val) {
+                this.pageSize = val
+                this.pageIndex = 1
+                this.getUserNinjaChipList()
+            },
+            // 当前页
+            currentChangeHandle(val) {
+                this.pageIndex = val
+                this.getUserNinjaChipList()
+            },
+            // 多选
+            selectionChangeHandle(val) {
+                this.userNinjaChipListSelections = val
+            },
+        }
+    })
+</script>
+
+<body>
+
+</body>
+
+</html>

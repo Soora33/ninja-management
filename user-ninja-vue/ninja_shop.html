@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./static/static/vue.min.js"></script>
+    <script src="./static/static/axios.min.js"></script>
+    <!-- 本地引入lib-master -->
+    <link rel="stylesheet" type="text/css" href="./static/lib-master/theme-chalk/index.css" />
+    <script src="./static/lib-master/index.js" type="text/javascript" charset="utf-8"></script>
+    <title>忍者商店</title>
+</head>
+
+<body>
+    <div id='app'>
+        <h1 align="center">忍者商店</h1>
+        <div class="mod-config">
+            <h2 align="right">今日可购买次数: <font style="color: blue">{{buyCount}}</font>
+            </h2>
+            <el-form :inline="true" :model="dataForm" @keyup.enter.native="getNinjaList()">
+                <el-form-item>
+                    <el-input v-model="dataForm.name" placeholder="忍者名称" clearable></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-select v-model="dataForm.levelId" clearable>
+                        <el-option placeholder="忍者等级" v-for="level in levelList" :label="level.level" :value="level.id"
+                            :id=" level.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="getNinjaList()">查询</el-button>
+                    <el-link type="primary" @click="location='./get_ninja.html'" style="color: red">招募忍者</el-link>
+                </el-form-item>
+            </el-form>
+            <el-table :data="ninjaList" border v-loading="ninjaListLoading" @selection-change="selectionChangeHandle"
+                style="width: 100%;">
+                <el-table-column prop="name" header-align="center" align="center" label="忍者名">
+                </el-table-column>
+                <el-table-column prop="levelName" header-align="center" align="center" label="忍者等级">
+                </el-table-column>
+                <el-table-column prop="price" header-align="center" align="center" label="碎片价格">
+                </el-table-column>
+                <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="success" :disabled="buyCount == 0" size="small" @click="buyChip(scope.row.id)">购买</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle"
+                :current-page="pageIndex" :page-sizes="[3, 5, 50, 100]" :page-size="pageSize" :total="totalPage"
+                layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+        </div>
+
+        <script>
+            new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        userId: localStorage.getItem('userId'),
+                        token: localStorage.getItem('token'),
+                        userName: localStorage.getItem('userId'),
+                        vipLevel: localStorage.getItem('vipLevel'),
+                        buyCount: localStorage.getItem('buyCount'),
+                        priceTotal: localStorage.getItem('priceTotal'),
+                        baseURL: 'http://127.0.0.1:88/api',
+                        dataForm: {
+                            name: '',
+                            levelId: ''
+                        },
+                        ninjaList: [],
+                        levelList: [],
+                        pageIndex: 1,
+                        pageSize: 3,
+                        totalPage: 0,
+                        ninjaListLoading: false,
+                        ninjaListSelections: [],
+                        addOrUpdateVisible: false
+                    }
+                },
+                created() {
+                    if (this.token) {
+                        console.log("实例化完成")
+                        this.getNinjaList();
+                        this.getLevelList();
+                    } else {
+                        location = './login.html';
+                    }
+                },
+                //方法集合
+                methods: {
+                    // 购买碎片
+                    buyChip(ninjaId) {
+                        axios.get(`${this.baseURL}/user/tbuser/buyChip/${ninjaId}/${this.userId}`, { headers: { "token": this.token } }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                this.$message.success(data.msg)
+                                this.getUserInfo();
+                                // 刷新页面
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000)
+                            } else {
+                                this.$message.error(data.msg)
+                            }
+                        })
+                    },
+                    // 获取用户信息
+                    getUserInfo() {
+                        axios.get(`${this.baseURL}/user/tbuser/info/${this.userId}`, { headers: { "token": this.token } }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                // JSON -> Object
+                                var tbUser = JSON.parse(data.tbUser);
+                                localStorage.setItem('buyCount', tbUser.buyCount);
+                                localStorage.setItem('gold', tbUser.gold);
+                                localStorage.setItem('vipLevel', tbUser.vipLevel);
+                            }
+                        })
+                    },
+                    // 获取数据列表
+                    getNinjaList() {
+                        this.ninjaListLoading = true
+                        axios.get(`${this.baseURL}/ninja/tbninja/list?page=${this.pageIndex}&pageSize=${this.pageSize}&name=${this.dataForm.name}&levelId=${this.dataForm.levelId}`, { headers: { "token": this.token } }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                this.ninjaList = data.page.list
+                                this.totalPage = data.page.totalCount
+                            } else {
+                                this.ninjaList = []
+                                this.totalPage = 0
+                            }
+                            this.ninjaListLoading = false
+                        })
+                    },
+                    // 获取所有的忍者等级 ninja/tblevel
+                    getLevelList() {
+                        axios.get(`${this.baseURL}/ninja/tblevel/list`, { headers: { "token": this.token } }).then(({ data }) => {
+                            if (data && data.code === 0) {
+                                this.levelList = data.page.list
+                            }
+                        })
+                    },
+                    // 每页数
+                    sizeChangeHandle(val) {
+                        this.pageSize = val
+                        this.pageIndex = 1
+                        this.getNinjaList()
+                    },
+                    // 当前页
+                    currentChangeHandle(val) {
+                        this.pageIndex = val
+                        this.getNinjaList()
+                    },
+                    // 多选
+                    selectionChangeHandle(val) {
+                        this.ninjaListSelections = val
+                    },
+                }
+            })
+        </script>
+
+</body>
+
+</html>
